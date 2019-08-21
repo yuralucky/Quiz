@@ -1,6 +1,6 @@
 @extends('layouts.app')
 @section('content')
-    <h2>У вас {{$rating}} балл(ов)</h2>
+    {{--<h2>У вас {{$rating}} балл(ов)</h2>--}}
     @include('layouts.flash')
     <h2>Чтобы получить еще 1 балл - выберите языки программирования,которые вы изучили </h2>
     <form action="{{route('page5')}}" method="post" >

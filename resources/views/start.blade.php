@@ -2,16 +2,16 @@
 @section('content')
     <h2>Старт</h2>
     @include('layouts.errors')
-    <form action="{{route('store')}}" method="post" enctype="multipart/form-data">
+    <form action="{{route('start')}}" method="post" enctype="multipart/form-data">
         @csrf
         <div class="form-group">
             <label for="Email">Укажите свой email</label>
-            <input class="form-control" type="email" name="email" value="" placeholder="Enter email">
+            <input class="form-control" type="email" name="email" value="{{old('email')}}" placeholder="Enter email">
         </div>
         <div class="form-group">
             <label for="Avatar">Выберите свой аватар</label>
 
-            <input type="file" class="form-control" name="avatar" value="">
+            <input type="file" class="form-control" name="avatar" value="{{old('avatar')}}">
         </div>
         <div class="form-group">
             <input type="submit" class="btn btn-block btn-success" value="Next">
