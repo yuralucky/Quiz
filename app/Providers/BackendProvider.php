@@ -13,8 +13,10 @@ class BackendProvider extends ServiceProvider
      */
     public function register()
     {
-        $this->app->bind('App\Repositories\QuizRepositoryInterface',
-            'App\Repositories\QuizRepository');
+        $this->app->bind('App\Repositories\ResultRepositoryInterface',
+            'App\Repositories\ResultRepository');
+        $this->app->bind('App\Repositories\UserRepositoryInterface',
+            'App\Repositories\UserRepository');
     }
 
     /**

@@ -3,22 +3,18 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\CreateUserRequest;
-use App\Repositories\QuizRepository;
-use App\Repositories\QuizRepositoryInterface;
-use App\Result;
-use Carbon\Carbon;
+use App\Services\PageCheckLogic;
 use Illuminate\Http\Request;
-use Illuminate\Support\Arr;
-use Illuminate\Support\Facades\Session;
+
 
 class ViewController extends Controller
 {
 
-    protected $quizRepository;
+    protected $pageCheckLogic;
 
-    public function __construct(QuizRepository $quizRepository)
+    public function __construct(PageCheckLogic $pageCheckLogic)
     {
-        $this->quizRepository = $quizRepository;
+        $this->pageCheckLogic = $pageCheckLogic;
     }
 
     /**
@@ -28,94 +24,137 @@ class ViewController extends Controller
      */
     public function start()
     {
-        $results = Result::with('user')->paginate(10);
+        $results = $this->pageCheckLogic->getDataPageStart();
         return view('start', compact('results'));
     }
 
-    public function logicStart(CreateUserRequest $request)
+    /**
+     * Make all logic from start page
+     *
+     * @param CreateUserRequest $request
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function logicPageStart(CreateUserRequest $request)
     {
-        $this->quizRepository->storeUser($request);
-        $this->quizRepository->storeDataSession($request);
+        $this->pageCheckLogic->logicStartPage($request);
         return redirect()->action('ViewController@viewPage2');
     }
 
+    /**
+     * Show page 2
+     *
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
     public function viewPage2()
     {
         return view('page2');
     }
 
-    public function logicPage2(CreateUserRequest $request)
+    /**
+     * Make all logic from  page2
+     *
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function logicPage2()
     {
-        $this->quizRepository->logicPage2($request);
-        $this->quizRepository->addRating();
+        $this->pageCheckLogic->logicPage2();
         return redirect()->action('ViewController@viewPage3');
     }
 
+
+    /**
+     * Show page 3
+     *
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
     public function viewPage3()
     {
-        $number1 = rand(10, 99);
-        $number2 = rand(10, 99);
-        return view('page3', compact('number1', 'number2'));
+        $randNumber = $this->pageCheckLogic->getDataPage3();
+        return view('page3', compact('randNumber'));
     }
 
+    /**
+     * Make all logic from  page3
+     *
+     * @param Request $request
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function logicPage3(Request $request)
     {
-        $this->quizRepository->checkSum( $request);
-        $this->quizRepository->addRating();
-
+        $this->pageCheckLogic->logicPage3($request);
         return redirect()->action('ViewController@viewPage4');
     }
 
+
+    /**
+     * Show page4
+     *
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
     public function viewPage4()
     {
-        return view('page4');
+        $languages = $this->pageCheckLogic->getDataPage4();
+        return view('page4', compact('languages'));
     }
 
+    /**
+     *  Make all logic from  page4
+     *
+     * @param Request $request
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function logicPage4(Request $request)
     {
-        $this->quizRepository->checkLanguage($request);
-        $this->quizRepository->addRating();
-
+        $this->pageCheckLogic->logicPage4($request);
         return redirect()->action('ViewController@viewPage5');
     }
 
     /**
+     * Show page5
+     *
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
     public function viewPage5()
     {
-        $data = $this->quizRepository->getDays();
+        $data = $this->pageCheckLogic->getDataPage5();
         return view('page5', compact('data'));
     }
 
+    /**
+     *  Make all logic from  page5
+     *
+     * @param Request $request
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function logicPage5(Request $request)
     {
-        $this->quizRepository->addRating();
-
-        $date = Carbon::now()->isoFormat('dddd');
-        if ($request->day == $date)
-            echo 'Ok';
+        $this->pageCheckLogic->logicPage5($request);
         return redirect()->action('ViewController@finish');
     }
 
+    /**
+     *  Collect and show all result
+     *
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
     public function finish()
     {
-        $duration = $this->quizRepository->getQuizTime();
-        return view('finish', compact('duration'));
+        $user = $this->pageCheckLogic->getDataPageFinish();
+        return view('finish', compact('user'));
     }
 
-    public function rating()
+
+    /**
+     * Save quiz result
+     *
+     * @param Request $request
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function logicFinish(Request $request)
     {
-
-        return $this->quizRepository->addRating();
+        $this->pageCheckLogic->logicFinish($request);
+        return redirect()->action('ViewController@start');
     }
 
-    public function test()
-    {
-        return $this->quizRepository->addRating();
-//        $session = session()->push('user.email', 'yura@admin');
-//        $today=today()->isoFormat('dddd');
-////        session()->flash('user');
-//        return dump($today);
-    }
+
 }

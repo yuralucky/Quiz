@@ -1,9 +1,8 @@
 @extends('layouts.app')
 @section('content')
-    {{--<h2>У вас {{$rating}}  балл(ов)</h2>--}}
     @include('layouts.flash')
     <h2>Чтобы получить еще 1 балл - угадайте какой сегодня день недели </h2>
-    <form action="{{route('finish')}}" class="form-group" method="post">
+    <form action="{{route('page5')}}" class="form-group" method="post">
         @csrf
         @foreach($data as $datum)
             <div class="radio">

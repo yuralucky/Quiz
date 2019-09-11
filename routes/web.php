@@ -11,11 +11,9 @@
 |
 */
 Route::get('/', 'ViewController@start');
-Route::get('test','ViewController@test');
-
 
 Route::get('/start', 'ViewController@start');
-Route::post('/start', 'ViewController@logicStart')->name('start');
+Route::post('/start', 'ViewController@logicPageStart')->name('start');
 
 Route::get('/page2', 'ViewController@viewPage2');
 Route::post('/page2', 'ViewController@logicPage2')->name('page2');
@@ -30,10 +28,8 @@ Route::get('/page5', 'ViewController@viewPage5');
 Route::post('/page5', 'ViewController@logicPage5')->name('page5');
 
 Route::get('/finish', 'ViewController@finish');
-Route::post('/finish', 'ViewController@finish')->name('finish');
+Route::post('/finish', 'ViewController@logicFinish')->name('finish');
 
 
-
-Route::get('rating','ViewController@rating');
 
 
